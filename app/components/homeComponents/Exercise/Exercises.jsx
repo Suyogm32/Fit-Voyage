@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Pagination } from "@mui/material";
 import { Box, Stack, Typography } from "@mui/material";
+<<<<<<< HEAD
 import ExerciseCard from "./ExerciseCard";
 import axios from "axios";
 import AddExercise from "@/app/AddExercise/page";
@@ -9,6 +10,13 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [addExer, setAddExer] = useState({});
   const exercisesPerPage = 8;
+=======
+import { exerciseOptions, fetchData } from "@/app/utils/fetchData";
+import ExerciseCard from "./ExerciseCard";
+const Exercises = ({ setExercises, bodyPart, exercises }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const exercisesPerPage = 9;
+>>>>>>> e84c902 (half project commit)
   const indexOfLastExercise = currentPage * exercisesPerPage;
   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
   const currentExercises = exercises?.slice(
@@ -16,6 +24,7 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
     indexOfLastExercise
   );
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchExercisesData = async () => {
       let exercisesData = [];
@@ -33,6 +42,21 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
       setShowPopup(true);
     }
   }, [bodyPart, addExer]);
+=======
+  useEffect(()=>{
+    const fetchExercisesData=async()=>{
+      let exercisesData=[];
+      if(bodyPart==='all'){
+        exercisesData=await fetchData('https://exercisedb.p.rapidapi.com/exercises?limit=5000',exerciseOptions);
+
+      }else{
+        exercisesData=await fetchData(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}?limit=5000`,exerciseOptions);
+      }
+      setExercises(exercisesData);
+    }
+    fetchExercisesData();
+  },[bodyPart])
+>>>>>>> e84c902 (half project commit)
 
   const paginate = (e, value) => {
     setCurrentPage(value);
@@ -53,6 +77,7 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
         justifyContent={"center"}
       >
         {currentExercises?.map((exer, index) => (
+<<<<<<< HEAD
           <ExerciseCard key={index} exercise={exer} setAddExer={setAddExer} />
         ))}
       </Stack>
@@ -64,6 +89,13 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
       )}
       <Stack mt={"50px"} alignItems={"center"}>
         {exercises?.length > 8 && (
+=======
+          <ExerciseCard key={index} exercise={exer} />
+        ))}
+      </Stack>
+      <Stack mt={"50px"} alignItems={"center"}>
+        {exercises?.length > 9 && (
+>>>>>>> e84c902 (half project commit)
           <Pagination
             color="standard"
             shape="circular"

@@ -4,6 +4,7 @@ const UserSchema=new Schema({
     name:String,
     email:String,
     password:String,
+<<<<<<< HEAD
     schedule: {
         mon: { type: [Schema.Types.Mixed], default: [] },
         tue: { type: [Schema.Types.Mixed], default: [] },
@@ -13,6 +14,8 @@ const UserSchema=new Schema({
         sat: { type: [Schema.Types.Mixed], default: [] },
         sun: { type: [Schema.Types.Mixed], default: [] },
     },
+=======
+>>>>>>> e84c902 (half project commit)
 });
 
 export const User=models.User || model('User',UserSchema);

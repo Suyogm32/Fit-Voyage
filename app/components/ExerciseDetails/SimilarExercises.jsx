@@ -11,7 +11,11 @@ const SimilarExercises = ({ targetMuscleExercises, equipmentExercises }) => {
         Similar <span style={{ color: "#ff2625" }}>Target Muscle</span>{" "}
         Exercises
       </Typography>
+<<<<<<< HEAD
       <Stack direction={"row"} sx={{ p: "2", position: "relative"}}>
+=======
+      <Stack direction={"row"} sx={{ p: "2", position: "relative" }}>
+>>>>>>> e84c902 (half project commit)
         {targetMuscleExercises?.length > 0 && (
           <HorizontalScrollForExercises exerciseData={targetMuscleExercises}/>
         )}
@@ -19,7 +23,11 @@ const SimilarExercises = ({ targetMuscleExercises, equipmentExercises }) => {
       <Typography variant="h4" mb={'20px'}>
         Similar <span style={{ color: "#ff2625" }}>Equipment</span> Exercises
       </Typography>
+<<<<<<< HEAD
       <Stack direction={"row"} sx={{ p: "2", position: "relative"}}>
+=======
+      <Stack direction={"row"} sx={{ p: "2", position: "relative" }}>
+>>>>>>> e84c902 (half project commit)
         {equipmentExercises?.length > 0 && (
           <HorizontalScrollForExercises exerciseData={equipmentExercises}/>
         )}

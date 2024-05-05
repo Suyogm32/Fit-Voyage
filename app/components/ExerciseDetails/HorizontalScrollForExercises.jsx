@@ -18,7 +18,11 @@ const HorizontalScrollForExercises = ({exerciseData}) => {
           className="w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth"
         >
           {exerciseData?.map((item, index) => (
+<<<<<<< HEAD
             <Box key={index} m="0 40px" className="mt-8 inline-block bg-white rounded-lg">
+=======
+            <Box key={index} m="0 40px" className="mt-8 inline-block">
+>>>>>>> e84c902 (half project commit)
             <ExerciseCard key={index} exercise={item} />
           </Box>
             
