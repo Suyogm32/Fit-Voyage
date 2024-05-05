@@ -1,22 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { TextField, Button,Box } from "@mui/material";
+<<<<<<< HEAD
 import HorizontalScrollBar from "./HorizontalScrollBar";
 import axios from "axios";
+=======
+import { fetchData, exerciseOptions } from "@/app/utils/fetchData";
+import HorizontalScrollBar from "./HorizontalScrollBar";
+>>>>>>> e84c902 (half project commit)
 const SearchExercises = ({setExercises,bodyPart,setBodyPart}) => {
   const [search, setSearch] = useState("");
   const [bodyParts,setBodyParts]=useState([]);
   useEffect(()=>{
     const fetchExercisesData=async()=>{
+<<<<<<< HEAD
         const resp=await axios.get('/api/ExerciseDB/bodyPart');
         const bodyPartsData=resp.data;
+=======
+        const bodyPartsData=await fetchData('https://exercisedb.p.rapidapi.com/exercises/bodyPartList',exerciseOptions);
+>>>>>>> e84c902 (half project commit)
         setBodyParts(['all',...bodyPartsData]);
     }
     fetchExercisesData();
   },[]);
   const handleSearch = async (exercise) => {
     if (search) {
+<<<<<<< HEAD
       const resp = await axios.get('/api/ExerciseDB');
       const exerciseData=resp.data;
+=======
+      const exerciseData = await fetchData(
+        'https://exercisedb.p.rapidapi.com/exercises?limit=5000',
+        exerciseOptions
+      );
+>>>>>>> e84c902 (half project commit)
       const searchedExercises=exerciseData.filter(
         (exercise)=>exercise.name.toLowerCase().includes(search) 
         || exercise.target.toLowerCase().includes(search)
