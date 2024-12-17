@@ -25,14 +25,14 @@ const ExerciseVideos = ({exerciseVideosData,exerciseName }) => {
         {exerciseVideosData?.contents?.slice(0,3).map((item, index) => (
           <Link
             key={index}
-            href={`https://www.youtube.com/watch?v=${item.video.videoId}`}
+            href={`https://www.youtube.com/watch?v=${item.video?.videoId}`}
             className="exercise-video mb-4"
             target="_blank"
             rel={'noreferrer'}
           >
-            <VideoCard thumbnail={item.video.thumbnails?.[0].url} title={item.video.title} channel={item.video.channelName}/>
-            <img src={item.video.thumbnails?.[0].url} alt={item.video.title} />
-            <Typography variant="h5">{item.video.title}</Typography>
+            <VideoCard thumbnail={item.video?.thumbnails?.[0].url} title={item.video?.title} channel={item.video?.channelName}/>
+            <img src={item.video?.thumbnails?.[0].url} alt={item.video?.title} />
+            <Typography variant="h5">{item.video?.title}</Typography>
           </Link>
         ))}
       </Stack>

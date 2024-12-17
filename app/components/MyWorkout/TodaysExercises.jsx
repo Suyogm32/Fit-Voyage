@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { Button,TextField,Typography } from '@mui/material';
+import axios from 'axios';
 const TodaysExercises = () => {
     const [search, setSearch] = useState("");
     const [exercise,setExercises]=useState([]);
     const handleSearch = async (exercise) => {
         if (search) {
-          const exerciseData = await fetchData(
-            'https://exercisedb.p.rapidapi.com/exercises?limit=5000',
-            exerciseOptions
-          );
+          const resp = await axios.get('/api/ExerciseDB');
+          const exerciseData=resp.data;
           const searchedExercises=exerciseData.filter(
             (exercise)=>exercise.name.toLowerCase().includes(search) 
             || exercise.target.toLowerCase().includes(search)

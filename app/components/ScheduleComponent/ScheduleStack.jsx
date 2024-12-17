@@ -1,19 +1,27 @@
-import React,{useState} from 'react'
-import { Box,Stack } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import { Box, Stack } from "@mui/material";
 import { Pagination } from "@mui/material";
-import ExerciseCard from '../homeComponents/Exercise/ExerciseCard';
+import ExerciseCard from "../homeComponents/Exercise/ExerciseCard";
+import AddExercise from "@/app/AddExercise/page";
 const ScheduleStack = ({ setExercises, exercises }) => {
-    const [currentPage, setCurrentPage] = useState(1);
-  const exercisesPerPage = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showPopup, setShowPopup] = useState(false);
+  const [addExer, setAddExer] = useState({});
+  const exercisesPerPage = 8;
   const indexOfLastExercise = currentPage * exercisesPerPage;
   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
   const currentExercises = exercises?.slice(
     indexOfFirstExercise,
     indexOfLastExercise
   );
+  useEffect(() => {
+    if (addExer.name) {
+      setShowPopup(true);
+    }
+  }, [addExer]);
   const paginate = (e, value) => {
     setCurrentPage(value);
-    document.getElementById("showing-results").scrollIntoView({
+    document.getElementById("exercises").scrollIntoView({
       behavior: "smooth",
     });
   };
@@ -26,11 +34,17 @@ const ScheduleStack = ({ setExercises, exercises }) => {
         justifyContent={"center"}
       >
         {currentExercises?.map((exer, index) => (
-          <ExerciseCard key={index} exercise={exer} />
+          <ExerciseCard key={index} exercise={exer} setAddExer={setAddExer} />
         ))}
       </Stack>
+      {showPopup && (
+        <>
+          {console.log("Neaserst to component", addExer)}
+          <AddExercise exerc={addExer} setShowPopup={setShowPopup} />
+        </>
+      )}
       <Stack mt={"50px"} alignItems={"center"}>
-        {exercises?.length > 9 && (
+        {exercises?.length > 8 && (
           <Pagination
             color="standard"
             shape="circular"
@@ -43,7 +57,7 @@ const ScheduleStack = ({ setExercises, exercises }) => {
         )}
       </Stack>
     </Box>
-  )
-}
+  );
+};
 
-export default ScheduleStack
+export default ScheduleStack;

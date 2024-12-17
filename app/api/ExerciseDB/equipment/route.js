@@ -1,4 +1,4 @@
-import { Exercise } from "@/models/ExerciseData";
+import { ExerciseDB } from "@/models/ExerciseData";
 import { mongooseConnect } from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 
@@ -8,7 +8,7 @@ export const GET=async(req)=>{
         const {searchParams}=new URL(req.url);
         const equipment=searchParams.get('equipment');
         if(equipment){
-            const EquipmentExercises=await Exercise.find({equipment:equipment});
+            const EquipmentExercises=await ExerciseDB.find({equipment:equipment}).limit(5);;
             return new NextResponse(JSON.stringify(EquipmentExercises), { status: 200 });
         }else{
             return new NextResponse(JSON.stringify({message:'No such equipment found'}), { status: 200 });

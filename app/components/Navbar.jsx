@@ -56,7 +56,7 @@ const Navbar = () => {
         <img
             src={session.data?.user?.image}
             alt="User"
-            className="md:hidden rounded-full w-[40px] h-[40px] "
+            className="md:hidden rounded-full w-[40px] h-[40px]"
           />
         <NavButton
           shownav={shownav}
