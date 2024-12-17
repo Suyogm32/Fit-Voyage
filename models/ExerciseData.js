@@ -11,4 +11,4 @@ const ExerciseSchema=new Schema({
     secondaryMuscles:[String],
     instructions:[String]
 });
-export const Exercise=models.Exercise || model('Exercise',ExerciseSchema);
+export const ExerciseDB=models.ExerciseDB || model('ExerciseDB',ExerciseSchema);

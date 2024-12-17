@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Pagination } from "@mui/material";
 import { Box, Stack, Typography } from "@mui/material";
-import { exerciseOptions, fetchData } from "@/app/utils/fetchData";
 import ExerciseCard from "./ExerciseCard";
+import axios from "axios";
+import AddExercise from "@/app/AddExercise/page";
 const Exercises = ({ setExercises, bodyPart, exercises }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const exercisesPerPage = 9;
+  const [showPopup, setShowPopup] = useState(false);
+  const [addExer, setAddExer] = useState({});
+  const exercisesPerPage = 8;
   const indexOfLastExercise = currentPage * exercisesPerPage;
   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
   const currentExercises = exercises?.slice(
@@ -13,19 +16,23 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
     indexOfLastExercise
   );
 
-  useEffect(()=>{
-    const fetchExercisesData=async()=>{
-      let exercisesData=[];
-      if(bodyPart==='all'){
-        exercisesData=await fetchData('https://exercisedb.p.rapidapi.com/exercises?limit=5000',exerciseOptions);
-
-      }else{
-        exercisesData=await fetchData(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}?limit=5000`,exerciseOptions);
+  useEffect(() => {
+    const fetchExercisesData = async () => {
+      let exercisesData = [];
+      if (bodyPart === "all") {
+        exercisesData = await axios.get("/api/ExerciseDB");
+      } else {
+        exercisesData = await axios.get(
+          `/api/ExerciseDB/bodyPart/?bodyPart=${bodyPart}`
+        );
       }
-      setExercises(exercisesData);
-    }
+      setExercises(exercisesData.data);
+    };
     fetchExercisesData();
-  },[bodyPart])
+    if (addExer.name) {
+      setShowPopup(true);
+    }
+  }, [bodyPart, addExer]);
 
   const paginate = (e, value) => {
     setCurrentPage(value);
@@ -46,11 +53,17 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
         justifyContent={"center"}
       >
         {currentExercises?.map((exer, index) => (
-          <ExerciseCard key={index} exercise={exer} />
+          <ExerciseCard key={index} exercise={exer} setAddExer={setAddExer} />
         ))}
       </Stack>
+      {showPopup && (
+        <>
+          {console.log("Neaserst to component", addExer)}
+          <AddExercise exerc={addExer} setShowPopup={setShowPopup} />
+        </>
+      )}
       <Stack mt={"50px"} alignItems={"center"}>
-        {exercises?.length > 9 && (
+        {exercises?.length > 8 && (
           <Pagination
             color="standard"
             shape="circular"

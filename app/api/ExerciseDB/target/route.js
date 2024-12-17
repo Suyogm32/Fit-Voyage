@@ -1,4 +1,4 @@
-import { Exercise } from "@/models/ExerciseData";
+import {ExerciseDB } from "@/models/ExerciseData";
 import { mongooseConnect } from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 
@@ -8,7 +8,7 @@ export const GET=async(req)=>{
         const {searchParams}=new URL(req.url);
         const target=searchParams.get('target');
         if(target){
-            const targetExercises=await Exercise.find({target:target});
+            const targetExercises=await ExerciseDB.find({target:target}).limit(5);
             return new NextResponse(JSON.stringify(targetExercises), { status: 200 });
         }else{
             return new NextResponse(JSON.stringify({message:'No target muscle found'}), { status: 200 });
