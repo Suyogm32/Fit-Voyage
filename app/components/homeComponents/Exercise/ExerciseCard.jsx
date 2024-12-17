@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from "react";
 import Link from "next/link";
 import { Button, Stack, Typography } from "@mui/material";
@@ -23,16 +22,6 @@ const ExerciseCard = ({ exercise,setAddExer}) => {
       </Link>
       <Stack direction={"row"} justifyContent={'space-between'} borderRadius={'50%'}>
         <div>
-=======
-import React from "react";
-import Link from "next/link";
-import { Button, Stack, Typography } from "@mui/material";
-const ExerciseCard = ({ exercise }) => {
-  return (
-    <Link href={`/exercise/${exercise.id}`} className="exercise-card">
-      <img src={exercise.gifUrl} alt={exercise.name} loading="lazy" />
-      <Stack direction={"row"}>
->>>>>>> e84c902 (half project commit)
         <Button
           sx={{
             ml: "20px",
@@ -57,7 +46,6 @@ const ExerciseCard = ({ exercise }) => {
         >
           {exercise.target}
         </Button>
-<<<<<<< HEAD
         </div>
         <button className="mr-4" onClick={handleClick}>
           <svg
@@ -78,9 +66,6 @@ const ExerciseCard = ({ exercise }) => {
       href={`/exercise/${exercise.id}`}
       className="exercise-card bg-white rounded-lg"
     >
-=======
-      </Stack>
->>>>>>> e84c902 (half project commit)
       <Typography
         ml={"20px"}
         color={"#000"}
@@ -88,20 +73,12 @@ const ExerciseCard = ({ exercise }) => {
         mt={"10px"}
         p={"10px"}
         textTransform={"capitalize"}
-<<<<<<< HEAD
         fontSize={"20px"}
       >
         {exercise.name}
       </Typography>
       </Link>
       </div>
-=======
-        fontSize={'20px'}
-      >
-        {exercise.name}
-      </Typography>
-    </Link>
->>>>>>> e84c902 (half project commit)
   );
 };
 
