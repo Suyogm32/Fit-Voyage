@@ -4,19 +4,21 @@ import { Typography,Button } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 const AddExeForm = ({ exercise,setShowPopup}) => {
-const ss = typeof window !== "undefined" ? window.sessionStorage : null;
-const router=useRouter();
+  const ss = typeof window !== "undefined" ? window.sessionStorage : null;
+  const router=useRouter();
   console.log(exercise);
   let initialState = {
     exerciseName: exercise.name,
     exerciseId: exercise.id,
     exerciseGif:exercise.gifUrl,
-    numbreOfSets: 0,
+    numberOfSets: 0,
     numberOfReps: 0,
   };
+
   const [userExercise, setUserExercise] = useState(initialState);
   const [error, setError] = useState("");
   const [day,setDay]=useState('mon');
+
   const PutAttribute = (e, attribute) => {
     const newExercise = { ...userExercise };
     newExercise[attribute] = e.target.value;
@@ -25,9 +27,10 @@ const router=useRouter();
 
   const saveUserExercise = async (e) => {
     e.preventDefault();
-    try {
-        const uid=JSON.parse(ss.getItem('user')).userId;
-        console.log("users is ",uid);
+    try 
+    {
+      const uid=JSON.parse(ss.getItem('user')).userId;
+      console.log("users is ",uid);
       const data = {uid,day,userExercise};
       console.log(`data at checkout on ${day} of user ${uid}`, data);
       const resp=await axios.put("/api/SaveWorkout",data);
@@ -80,8 +83,8 @@ const router=useRouter();
           type="number"
           name="Sets"
           placeholder={"Number of Sets"}
-          value={userExercise.numbreOfSets}
-          onChange={(e) => PutAttribute(e, "numbreOfSets")}
+          value={userExercise.numberOfSets}
+          onChange={(e) => PutAttribute(e, "numberOfSets")}
           className="p-4 py-2"
         />
         <input

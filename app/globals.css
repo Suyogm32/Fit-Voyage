@@ -8,7 +8,7 @@
   body {
     @apply bg-background text-foreground bg-mybg;
   }
-
+}
 *::-webkit-scrollbar {
   width: 0; /* Hide scrollbar in WebKit browsers (e.g., Chrome, Safari) */
 }

@@ -1,37 +1,50 @@
-import React, { useState } from 'react'
+import React, { useState ,useEffect } from 'react'
 import { Button,TextField,Typography } from '@mui/material';
-<<<<<<< HEAD
 import axios from 'axios';
-=======
->>>>>>> e84c902 (half project commit)
-const TodaysExercises = () => {
+
+import WorkoutCard from './WorkoutCard';
+const TodaysExercises = ({selectedDate}) => {
     const [search, setSearch] = useState("");
-    const [exercise,setExercises]=useState([]);
-    const handleSearch = async (exercise) => {
-        if (search) {
-<<<<<<< HEAD
-          const resp = await axios.get('/api/ExerciseDB');
-          const exerciseData=resp.data;
-=======
-          const exerciseData = await fetchData(
-            'https://exercisedb.p.rapidapi.com/exercises?limit=5000',
-            exerciseOptions
-          );
->>>>>>> e84c902 (half project commit)
-          const searchedExercises=exerciseData.filter(
-            (exercise)=>exercise.name.toLowerCase().includes(search) 
-            || exercise.target.toLowerCase().includes(search)
-            || exercise.equipment.toLowerCase().includes(search)
-            || exercise.bodyPart.toLowerCase().includes(search)
-          );
-          setSearch('');
-          setExercises(searchedExercises);
-        }
-      };
+    const [todaysExercises,setTodaysExercises]=useState([]);
+    const days={0:"sun",1:"mon",2:"tue",3:"wed",4:"thu",5:"fri",6:"sat"};
+    // Fetch schedule data
+  const loadExercises = async () => {
+    try {
+      const ss = typeof window !== "undefined" ? window.sessionStorage : null;
+      const user = ss ? JSON.parse(ss.getItem("user")) : null;
+
+      if (!user || !user.userId) {
+        console.error("User ID is not available");
+        return;
+      }
+
+      const response = await axios.get(`/api/MySchedule`, {
+        params: { userId: user.userId },
+      });
+
+      if (response.data && response.data.length > 0 && response.data[0].schedule) {
+        const schedule = response.data[0].schedule;
+        const selectedDay = days[new Date(selectedDate).getDay()]; // Get the day from the selectedDate
+        setTodaysExercises(schedule[selectedDay] || []); // Set exercises for the selected day
+        
+      }
+    } catch (error) {
+      console.error("Error loading exercises:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedDate) {
+      loadExercises(); // Fetch exercises whenever selectedDate changes
+    }
+  }, [selectedDate]);
+
   return (
     <div className="border-black w-auto bg-white mt-8 rounded-lg p-4">
         <div className="flex gap-[50px] justify-between">
-      <Typography variant="h5" sx={{display:'flex'}}>Today's Workout Schedule</Typography>
+      <Typography variant="h5" sx={{display:'flex'}}>
+      {selectedDate ? `Workout Schedule for ${new Date(selectedDate).toDateString()}` : "Today's Workout Schedule"}
+      </Typography>
         <button className="inline-flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -46,6 +59,15 @@ const TodaysExercises = () => {
             />
           </svg>
         </button>
+      </div>
+      <div className="mt-4">
+        {todaysExercises.length > 0 ? (
+          todaysExercises.map((exercise) => (
+            <WorkoutCard key={exercise._id} exercise={exercise}/>
+          ))
+        ) : (
+          <p>No exercises scheduled for this day.</p>
+        )}
       </div>
     </div>
   )

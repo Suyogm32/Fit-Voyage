@@ -36,7 +36,7 @@ const ScheduleExerciseCard = ({ exercise }) => {
         <Typography textTransform={"capitalize"}>
           {exercise.exerciseName}
         </Typography>
-        <Typography>Sets - {exercise.numbreOfSets}</Typography>
+        <Typography>Sets - {exercise.numberOfSets}</Typography>
         <div className="flex gap-8 justify-between items-center">
           <Typography>Repetations - {exercise.numberOfReps}</Typography>
           <Button className="place-self-end" onClick={removeExercise(exercise.exerciseId)}>
