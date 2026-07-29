@@ -10,9 +10,16 @@ const BodyPart = ({ item, bodyPart, setBodyPart }) => {
       className="bodyPart-card bg-white rounded-xl p-4 gap-4"
       onClick={() => setBodyPart(item)}
     >
-      <img src={`/gym/${formattedItem}.png`} alt={item} className="w-24 h-24 rounded-lg" />
+      <img
+        src={`/gym/${formattedItem}.png`}
+        alt={item}
+        className="w-24 h-24 rounded-lg"
+      />
       <Typography
-        sx={{ fontSize: { xs: "10px", sm: "10px", md: "20px", lg: "25px" },textTransform:'capitalize' }}
+        sx={{
+          fontSize: { xs: "10px", sm: "10px", md: "20px", lg: "25px" },
+          textTransform: "capitalize",
+        }}
       >
         {item}
       </Typography>

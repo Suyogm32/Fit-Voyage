@@ -13,7 +13,7 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
   const currentExercises = exercises?.slice(
     indexOfFirstExercise,
-    indexOfLastExercise
+    indexOfLastExercise,
   );
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Exercises = ({ setExercises, bodyPart, exercises }) => {
         exercisesData = await axios.get("/api/ExerciseDB");
       } else {
         exercisesData = await axios.get(
-          `/api/ExerciseDB/bodyPart/?bodyPart=${bodyPart}`
+          `/api/ExerciseDB/bodyPart/?bodyPart=${bodyPart}`,
         );
       }
       setExercises(exercisesData.data);

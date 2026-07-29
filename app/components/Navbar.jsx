@@ -53,42 +53,46 @@ const Navbar = () => {
           />
         </Link>
         <div className="flex gap-4">
-        <img
+          <img
             src={session.data?.user?.image}
             alt="User"
             className="md:hidden rounded-full w-[40px] h-[40px]"
           />
-        <NavButton
-          shownav={shownav}
-          onClick={() => setShowNav((prev) => !prev)}
-          className="md:hidden"
-        >
-          <Bars />
-        </NavButton>
-        <StyledNav
-          shownav={shownav}
-          className="mylink"
-          onClick={() => setShowNav((prev) => !prev)}
-        >
-          <button className="md:hidden">
+          <NavButton
+            shownav={shownav}
+            onClick={() => setShowNav((prev) => !prev)}
+            className="md:hidden"
+          >
             <Bars />
-          </button>
-          <Link href={"/"}>Home</Link>
-          <Link href={"#exercises"}>Exercises</Link>
-          <Link href={"/memberships"}>Memberships</Link>
-          <Link href={"/myworkout"}>Workout</Link>
-          <Link href={"/schedule"}>Schedule</Link>
-          <button onClick={logout} className="md:hidden">Logout</button>
-        </StyledNav>
-        <div className="flex gap-2 justify-center items-center">
-          <img
-            src={session.data?.user?.image}
-            alt="User"
-            className="hidden md:block rounded-full w-[50px] h-[50px]"
-          />
-          <button onClick={logout} className="hidden md:block">Logout</button>
+          </NavButton>
+          <StyledNav
+            shownav={shownav}
+            className="mylink"
+            onClick={() => setShowNav((prev) => !prev)}
+          >
+            <button className="md:hidden">
+              <Bars />
+            </button>
+            <Link href={"/"}>Home</Link>
+            <Link href={"#exercises"}>Exercises</Link>
+            <Link href={"/memberships"}>Memberships</Link>
+            <Link href={"/myworkout"}>Workout</Link>
+            <Link href={"/schedule"}>Schedule</Link>
+            <button onClick={logout} className="md:hidden">
+              Logout
+            </button>
+          </StyledNav>
+          <div className="flex gap-2 justify-center items-center">
+            <img
+              src={session.data?.user?.image}
+              alt="User"
+              className="hidden md:block rounded-full w-[50px] h-[50px]"
+            />
+            <button onClick={logout} className="hidden md:block">
+              Logout
+            </button>
+          </div>
         </div>
-      </div>
       </div>
     </>
   );

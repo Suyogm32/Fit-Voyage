@@ -1,7 +1,7 @@
-import React, { useEffect, useState, usePathname } from 'react'
-import styled from 'styled-components';
-import ScheduleExerciseCard from './ScheduleExerciseCard';
-import axios from 'axios';
+import React, { useEffect, useState, usePathname } from "react";
+import styled from "styled-components";
+import ScheduleExerciseCard from "./ScheduleExerciseCard";
+import axios from "axios";
 
 const GridContainer = styled.div`
   display: grid;
@@ -11,8 +11,8 @@ const GridContainer = styled.div`
   width: 100%;
   padding: 10px;
   margin: auto;
-   /* Align the entire grid */
-   justify-content: center; /* Center the grid horizontally */
+  /* Align the entire grid */
+  justify-content: center; /* Center the grid horizontally */
   align-content: start; /* Align the grid to the top vertically */
 
   /* Align grid items */
@@ -40,35 +40,31 @@ const GridItem = styled.div`
   justify-content: flex-start; /* Align content to the top */
 `;
 
-
 const ExerSchedule = ({ updateTrigger }) => {
   const ss = typeof window !== "undefined" ? window.sessionStorage : null;
-  const [schedule,setSchedule]=useState({});
+  const [schedule, setSchedule] = useState({});
   const [error, setError] = useState(null);
 
-  const fetchSchedule = async() => {
+  const fetchSchedule = async () => {
     try {
-      const user = ss ? JSON.parse(ss.getItem("user")) : null; 
+      const user = ss ? JSON.parse(ss.getItem("user")) : null;
       if (!user || !user.userId) {
-          console.error("User ID is not available");
-          setError("User not found. Please log in again.");
-          return;
+        console.error("User ID is not available");
+        setError("User not found. Please log in again.");
+        return;
       }
-  
+
       const response = await axios.get(`/api/MySchedule`, {
-        params: { userId: user.userId } 
+        params: { userId: user.userId },
       });
 
-      if(response.data && response.data[0].schedule)
-      {
-        setSchedule(response.data[0].schedule); 
+      if (response.data && response.data[0].schedule) {
+        setSchedule(response.data[0].schedule);
         setError(null);
-      }
-      else{
+      } else {
         setSchedule({});
         setError("No Schedule Available!");
       }
-      
     } catch (error) {
       console.error("Error fetching schedule:", error);
       setError("Failed to load schedule. Please try again later.");
@@ -79,26 +75,32 @@ const ExerSchedule = ({ updateTrigger }) => {
     fetchSchedule();
   }, [updateTrigger]); // Re-fetch schedule when updateTrigger changes
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
-      {
-        error ? (
-          <p style={{ color: 'red' }}>{error}</p>
-        ):
-        (
-        <GridContainer className='items-center'>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-around",
+        alignItems: "center",
+      }}
+    >
+      {error ? (
+        <p style={{ color: "red" }}>{error}</p>
+      ) : (
+        <GridContainer className="items-center">
           {schedule && Object.keys(schedule).length > 0 ? (
             Object.keys(schedule).map((day) => (
-              <GridItem key={day} style={{ marginBottom: '20px' }}>
+              <GridItem key={day} style={{ marginBottom: "20px" }}>
                 <h3>{day.toUpperCase()}</h3>
                 <div>
                   {schedule[day].length > 0 ? (
                     <ul>
                       {schedule[day].map((exercise) => (
-                        <li key={exercise._id}> {/* Ensure exercise has a unique identifier */}
+                        <li key={exercise._id}>
+                          {" "}
+                          {/* Ensure exercise has a unique identifier */}
                           <ScheduleExerciseCard
                             exercise={exercise}
                             day={day}
-                            className='gap-4'
+                            className="gap-4"
                           />
                         </li>
                       ))}
@@ -113,11 +115,9 @@ const ExerSchedule = ({ updateTrigger }) => {
             <p>No schedule available.</p>
           )}
         </GridContainer>
-      )
-      }
-      
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default ExerSchedule
+export default ExerSchedule;

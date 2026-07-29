@@ -12,7 +12,7 @@ const HorizontalScrollBar = ({ data, bodyPart, setBodyPart }) => {
     slider.scrollLeft = slider.scrollLeft + 500;
   };
   return (
-    <Box sx={{position:'relative',width:'100%', p:'20px'}}>
+    <Box sx={{ position: "relative", width: "100%", p: "20px" }}>
       <div className="relative flex items-center">
         <div
           id="slider"

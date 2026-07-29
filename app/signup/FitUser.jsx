@@ -13,10 +13,10 @@ const SignupGrid = styled.div`
   margin: 0;
   top: 0;
   bottom: 0;
-  @media screen and (min-width:768px){
-    grid-template-columns: .8fr 1.2fr;
+  @media screen and (min-width: 768px) {
+    grid-template-columns: 0.8fr 1.2fr;
   }
-  @media screen and (min-width:900px){
+  @media screen and (min-width: 900px) {
     grid-template-columns: 0.7fr 1.3fr;
   }
 `;
@@ -93,10 +93,7 @@ const FitUser = () => {
         </button>
         <div className="flex items-center justify-end px-2 m-3 pt-4 border-t-2">
           Already have account?,{" "}
-          <Link
-            href={"/"}
-            className="text-blue-500"
-          >
+          <Link href={"/"} className="text-blue-500">
             Login
           </Link>{" "}
         </div>

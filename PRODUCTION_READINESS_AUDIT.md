@@ -18,26 +18,32 @@ No middleware, no tests, no CI, no error monitoring, no rate limiting, no input 
 ## 1. Critical — fix before anything else touches production
 
 ### 1.1 Live secret committed in the repo
+
 `models/updateScript.js` has a hardcoded MongoDB Atlas connection string with a plaintext username/password, committed and present in the working tree today. Anyone with repo access (or anyone who ever cloned it) has your database credentials.
 **Action:** rotate the Atlas password immediately, delete the hardcoded string (use `process.env.MONGODB_URI` instead), and treat the old password as burned.
 
 ### 1.2 Secrets in git history
+
 `.env` was committed and later deleted across several commits (`8a63302`, `b5be3a9`, `d34f8b7`, `98d7afa`). Deleting a file doesn't remove it from history — `MONGODB_URI`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_SECRET`, and the RapidAPI key from that period are all still retrievable via `git show <commit>:.env`.
 **Action:** rotate every credential that was ever in `.env` (Google OAuth secret, NextAuth secret, RapidAPI key, Mongo password — same rotation as 1.1 covers Mongo). Once rotated, history rewriting (BFG/filter-repo) is optional cleanup, not a substitute for rotation.
 
 ### 1.3 RapidAPI keys hardcoded and shipped to the browser
+
 `app/utils/fetchData.js` hardcodes two RapidAPI keys directly in source, and this module is imported by client components (`ExerciseVideos.jsx`, `app/exercise/[...id]/page.jsx`). That means the keys ship in the JS bundle to every visitor — anyone can open devtools and lift them, and your RapidAPI usage/billing is exposed. Note the `.env` already defines `EXERCISE_RAPID_API_KEY` / `RAPID_API_HOST` but nothing reads them.
 **Action:** move all RapidAPI calls behind your own API routes (server-side only), read the key from `process.env` there, and have client components call your route instead of RapidAPI directly.
 
 ### 1.4 Passwords stored and compared in plaintext
+
 `models/User.js` has a bare `password: String`. `app/api/signup/route.js` saves it as-is; `app/api/login/route.js` does `User.findOne({ email, password })` — a plaintext equality match, and it also `console.log`s the raw password on every login attempt.
 **Action:** hash with bcrypt (or argon2) on signup, compare with a hash check on login, never log credentials.
 
 ### 1.5 No authorization on API routes (IDOR)
+
 `/api/MySchedule`, `/api/MySchedule/CompletedExercises`, `/api/SaveWorkout` all trust a `userId` passed straight from the client (from `sessionStorage`, which any user can edit in devtools). There is no session check tying the request to the logged-in user. Anyone can read or write anyone else's workout schedule by changing one value in localStorage/devtools.
 **Action:** every route that touches user data must derive the user from a verified server-side session (`getServerSession`), not from a client-supplied ID.
 
 ### 1.6 Two disconnected auth systems, one is fake
+
 The Google OAuth path produces a real NextAuth session cookie. The email/password path does not — `Login.jsx`'s `checkUser` just mutates a local JS object (`session.status = "authenticated"`) which doesn't trigger React state or persist anything server-side; "logged in" state is entirely reconstructed from `sessionStorage` on next load. There's no server-verifiable session for credential users at all, which is also why 1.5 is possible.
 **Action:** decide on one auth strategy. Either add NextAuth's Credentials provider (so email/password also produces a real session) or drop the custom flow and go Google-only. Either way, stop using `sessionStorage` as a trust boundary.
 

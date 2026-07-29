@@ -12,7 +12,7 @@ const CardGrid = styled.div`
 `;
 const ButtonGrid = styled.div`
   display: grid;
-  grid-template-columns: 1.5fr .5fr;
+  grid-template-columns: 1.5fr 0.5fr;
   gap: 10px;
   background-color: "#F8D8D6";
   width: auto;
@@ -20,9 +20,7 @@ const ButtonGrid = styled.div`
   border-radius: 10px;
 `;
 const ScheduleExerciseCard = ({ exercise }) => {
-  const removeExercise=(exerciseId)=>{
-
-  }
+  const removeExercise = (exerciseId) => {};
   return (
     <CardGrid className="bg-mybg mb-2 gap-5">
       <div className="flex justify-center items-center">
@@ -39,7 +37,10 @@ const ScheduleExerciseCard = ({ exercise }) => {
         <Typography>Sets - {exercise.numberOfSets}</Typography>
         <div className="flex gap-8 justify-between items-center">
           <Typography>Repetations - {exercise.numberOfReps}</Typography>
-          <Button className="place-self-end" onClick={removeExercise(exercise.exerciseId)}>
+          <Button
+            className="place-self-end"
+            onClick={removeExercise(exercise.exerciseId)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

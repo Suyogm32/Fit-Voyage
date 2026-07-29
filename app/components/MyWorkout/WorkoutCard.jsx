@@ -12,7 +12,7 @@ const CardGrid = styled.div`
 `;
 const ButtonGrid = styled.div`
   display: grid;
-  grid-template-columns: 1.5fr .5fr;
+  grid-template-columns: 1.5fr 0.5fr;
   gap: 10px;
   background-color: "#F8D8D6";
   width: auto;
@@ -23,39 +23,34 @@ const ButtonGrid = styled.div`
 const WorkoutCard = ({ exercise }) => {
   return (
     <div className="bg-mybg mb-2 gap-5">
-      {
-        exercise ? (
-          <CardGrid className="bg-mybg mb-2 gap-5">
+      {exercise ? (
+        <CardGrid className="bg-mybg mb-2 gap-5">
           <div className="flex justify-center items-center">
-          <img
-            src={exercise.exerciseGif}
-            alt={exercise.exerciseName}
-            className="rounded-md"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <Typography textTransform={"capitalize"}>
-            {exercise.exerciseName}
-          </Typography>
-          <Typography>Sets - {exercise.numberOfSets}</Typography>
-          <div className="flex gap-8 justify-between items-center">
-            <Typography>Repetations - {exercise.numberOfReps}</Typography>
-            <Button type="submit" className="place-self-end bg-white rounded-lg">
-                Done
-            </Button>
+            <img
+              src={exercise.exerciseGif}
+              alt={exercise.exerciseName}
+              className="rounded-md"
+            />
           </div>
-        </div>
+          <div className="flex flex-col gap-1">
+            <Typography textTransform={"capitalize"}>
+              {exercise.exerciseName}
+            </Typography>
+            <Typography>Sets - {exercise.numberOfSets}</Typography>
+            <div className="flex gap-8 justify-between items-center">
+              <Typography>Repetations - {exercise.numberOfReps}</Typography>
+              <Button
+                type="submit"
+                className="place-self-end bg-white rounded-lg"
+              >
+                Done
+              </Button>
+            </div>
+          </div>
         </CardGrid>
-        
-        )
-        :
-        (
-          null
-        )
-      }
+      ) : null}
     </div>
   );
 };
 
 export default WorkoutCard;
-

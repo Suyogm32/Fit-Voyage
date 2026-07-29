@@ -5,17 +5,19 @@ import { NextResponse } from "next/server";
 export const GET = async (req) => {
   try {
     await mongooseConnect();
-    const {searchParams}=new URL(req.url);
-    const bodyPart=searchParams.get('bodyPart');
-    if(bodyPart){
-        const exerciseByBodyPart=await ExerciseDB.find({bodyPart:bodyPart});
-        return new NextResponse(JSON.stringify(exerciseByBodyPart), { status: 200 });
-    }else{
-        const bodyParts = await ExerciseDB.distinct("bodyPart");
-        return new NextResponse(JSON.stringify(bodyParts), {
-      status: 200,
-    });
-    }   
+    const { searchParams } = new URL(req.url);
+    const bodyPart = searchParams.get("bodyPart");
+    if (bodyPart) {
+      const exerciseByBodyPart = await ExerciseDB.find({ bodyPart: bodyPart });
+      return new NextResponse(JSON.stringify(exerciseByBodyPart), {
+        status: 200,
+      });
+    } else {
+      const bodyParts = await ExerciseDB.distinct("bodyPart");
+      return new NextResponse(JSON.stringify(bodyParts), {
+        status: 200,
+      });
+    }
   } catch (error) {
     return new NextResponse(
       JSON.stringify({
@@ -24,7 +26,7 @@ export const GET = async (req) => {
       }),
       {
         status: 500,
-      }
+      },
     );
   }
 };

@@ -12,7 +12,7 @@ const ScheduleStack = ({ setExercises, exercises }) => {
   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
   const currentExercises = exercises?.slice(
     indexOfFirstExercise,
-    indexOfLastExercise
+    indexOfLastExercise,
   );
   useEffect(() => {
     if (addExer.name) {

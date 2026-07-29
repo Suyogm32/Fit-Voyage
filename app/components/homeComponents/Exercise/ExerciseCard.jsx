@@ -2,50 +2,51 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Button, Stack, Typography } from "@mui/material";
 
-
-const ExerciseCard = ({ exercise,setAddExer}) => {
-  const handleClick=()=>{
-    console.log("This is in ExerciseCard ->",exercise);
-    setAddExer(exercise); 
-  }
+const ExerciseCard = ({ exercise, setAddExer }) => {
+  const handleClick = () => {
+    console.log("This is in ExerciseCard ->", exercise);
+    setAddExer(exercise);
+  };
   return (
     <div className="exercise-card bg-white rounded-lg w-[300px]">
-    <Link
-      href={`/exercise/${exercise.id}`}
-    >
-      <img
-        src={exercise.gifUrl}
-        alt={exercise.name}
-        loading="lazy"
-        className="rounded-lg"
-      />
+      <Link href={`/exercise/${exercise.id}`}>
+        <img
+          src={exercise.gifUrl}
+          alt={exercise.name}
+          loading="lazy"
+          className="rounded-lg"
+        />
       </Link>
-      <Stack direction={"row"} justifyContent={'space-between'} borderRadius={'50%'}>
+      <Stack
+        direction={"row"}
+        justifyContent={"space-between"}
+        borderRadius={"50%"}
+      >
         <div>
-        <Button
-          sx={{
-            ml: "20px",
-            color: "#fff",
-            background: "#ffa9a9",
-            fontSize: "12px",
-            borderRadius: "20px",
-            textTransform: "capitalize",
-          }}
-        >
-          {exercise.bodyPart}
-        </Button>
-        <Button
-          sx={{
-            ml: "20px",
-            color: "#fff",
-            background: "#fcc757",
-            fontSize: "12px",
-            borderRadius: "20px",
-            textTransform: "capitalize",
-          }}
-        >
-          {exercise.target}
-        </Button>
+          <Button
+            sx={{
+              ml: "20px",
+              color: "#fff",
+              background: "#ffa9a9",
+              fontSize: "12px",
+              borderRadius: "20px",
+              textTransform: "capitalize",
+            }}
+          >
+            {exercise.bodyPart}
+          </Button>
+          <Button
+            sx={{
+              ml: "20px",
+              color: "#fff",
+              background: "#fcc757",
+              fontSize: "12px",
+              borderRadius: "20px",
+              textTransform: "capitalize",
+            }}
+          >
+            {exercise.target}
+          </Button>
         </div>
         <button className="mr-4" onClick={handleClick}>
           <svg
@@ -63,22 +64,22 @@ const ExerciseCard = ({ exercise,setAddExer}) => {
         </button>
       </Stack>
       <Link
-      href={`/exercise/${exercise.id}`}
-      className="exercise-card bg-white rounded-lg"
-    >
-      <Typography
-        ml={"20px"}
-        color={"#000"}
-        fontWeight={"bold"}
-        mt={"10px"}
-        p={"10px"}
-        textTransform={"capitalize"}
-        fontSize={"20px"}
+        href={`/exercise/${exercise.id}`}
+        className="exercise-card bg-white rounded-lg"
       >
-        {exercise.name}
-      </Typography>
+        <Typography
+          ml={"20px"}
+          color={"#000"}
+          fontWeight={"bold"}
+          mt={"10px"}
+          p={"10px"}
+          textTransform={"capitalize"}
+          fontSize={"20px"}
+        >
+          {exercise.name}
+        </Typography>
       </Link>
-      </div>
+    </div>
   );
 };
 

@@ -1,36 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Button,Box } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 import HorizontalScrollBar from "./HorizontalScrollBar";
 import axios from "axios";
-const SearchExercises = ({setExercises,bodyPart,setBodyPart}) => {
+const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   const [search, setSearch] = useState("");
-  const [bodyParts,setBodyParts]=useState([]);
-  useEffect(()=>{
-    const fetchExercisesData=async()=>{
-        const resp=await axios.get('/api/ExerciseDB/bodyPart');
-        const bodyPartsData=resp.data;
-        setBodyParts(['all',...bodyPartsData]);
-    }
+  const [bodyParts, setBodyParts] = useState([]);
+  useEffect(() => {
+    const fetchExercisesData = async () => {
+      const resp = await axios.get("/api/ExerciseDB/bodyPart");
+      const bodyPartsData = resp.data;
+      setBodyParts(["all", ...bodyPartsData]);
+    };
     fetchExercisesData();
-  },[]);
+  }, []);
   const handleSearch = async (exercise) => {
     if (search) {
-      const resp = await axios.get('/api/ExerciseDB');
-      const exerciseData=resp.data;
-      const searchedExercises=exerciseData.filter(
-        (exercise)=>exercise.name.toLowerCase().includes(search) 
-        || exercise.target.toLowerCase().includes(search)
-        || exercise.equipment.toLowerCase().includes(search)
-        || exercise.bodyPart.toLowerCase().includes(search)
-      )
-      setSearch('');
+      const resp = await axios.get("/api/ExerciseDB");
+      const exerciseData = resp.data;
+      const searchedExercises = exerciseData.filter(
+        (exercise) =>
+          exercise.name.toLowerCase().includes(search) ||
+          exercise.target.toLowerCase().includes(search) ||
+          exercise.equipment.toLowerCase().includes(search) ||
+          exercise.bodyPart.toLowerCase().includes(search),
+      );
+      setSearch("");
       setExercises(searchedExercises);
     }
   };
   return (
     <div className="flex flex-col justify-center items-center md:mt-16">
-    {bodyPart && (<><h1 className="font-semibold">Awesome Exercises You</h1>
-    <h1 className="font-semibold">Should Know</h1></>)}
+      {bodyPart && (
+        <>
+          <h1 className="font-semibold">Awesome Exercises You</h1>
+          <h1 className="font-semibold">Should Know</h1>
+        </>
+      )}
       <div className=" flex mt-8 justify-center gap-2">
         <TextField
           sx={{
@@ -50,7 +55,13 @@ const SearchExercises = ({setExercises,bodyPart,setBodyPart}) => {
         </Button>
       </div>
       {/* <Box sx={{position:'relative',width:'100%', p:'20px'}}> */}
-        {bodyPart &&  <HorizontalScrollBar data={bodyParts} bodyPart={bodyPart} setBodyPart={setBodyPart}/>}
+      {bodyPart && (
+        <HorizontalScrollBar
+          data={bodyParts}
+          bodyPart={bodyPart}
+          setBodyPart={setBodyPart}
+        />
+      )}
       {/* </Box> */}
     </div>
   );

@@ -1,23 +1,23 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Typography,Button } from "@mui/material";
+import { Typography, Button } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-const AddExeForm = ({ exercise,setShowPopup}) => {
+const AddExeForm = ({ exercise, setShowPopup }) => {
   const ss = typeof window !== "undefined" ? window.sessionStorage : null;
-  const router=useRouter();
+  const router = useRouter();
   console.log(exercise);
   let initialState = {
     exerciseName: exercise.name,
     exerciseId: exercise.id,
-    exerciseGif:exercise.gifUrl,
+    exerciseGif: exercise.gifUrl,
     numberOfSets: 0,
     numberOfReps: 0,
   };
 
   const [userExercise, setUserExercise] = useState(initialState);
   const [error, setError] = useState("");
-  const [day,setDay]=useState('mon');
+  const [day, setDay] = useState("mon");
 
   const PutAttribute = (e, attribute) => {
     const newExercise = { ...userExercise };
@@ -27,28 +27,25 @@ const AddExeForm = ({ exercise,setShowPopup}) => {
 
   const saveUserExercise = async (e) => {
     e.preventDefault();
-    try 
-    {
-      const uid=JSON.parse(ss.getItem('user')).userId;
-      console.log("users is ",uid);
-      const data = {uid,day,userExercise};
+    try {
+      const uid = JSON.parse(ss.getItem("user")).userId;
+      console.log("users is ", uid);
+      const data = { uid, day, userExercise };
       console.log(`data at checkout on ${day} of user ${uid}`, data);
-      const resp=await axios.put("/api/SaveWorkout",data);
-      console.log("log after saving workout",resp.data.schedule);
-      ss.setItem('schedule',JSON.stringify(resp.data.schedule));
+      const resp = await axios.put("/api/SaveWorkout", data);
+      console.log("log after saving workout", resp.data.schedule);
+      ss.setItem("schedule", JSON.stringify(resp.data.schedule));
       setShowPopup(false);
-      router.push('/schedule');
+      router.push("/schedule");
     } catch (error) {
       // Handle Axios POST request error
       console.error("Error creating product:", error);
       setError("Failed to create product. Please try again later.");
     }
   };
-  
+
   return (
-    <div
-      className="flex flex-col justify-center items-center bg-mybg p-8 rounded-xl gap-4"
-    >
+    <div className="flex flex-col justify-center items-center bg-mybg p-8 rounded-xl gap-4">
       <Typography variant="h4" textTransform={"capitalize"} display={"inline"}>
         Add this Exercise to your schedule
       </Typography>
@@ -95,7 +92,14 @@ const AddExeForm = ({ exercise,setShowPopup}) => {
           onChange={(e) => PutAttribute(e, "numberOfReps")}
           className="p-4 py-2"
         />
-        <Button onClick={saveUserExercise} variant="contained" color="error" className="place-self-center">Add</Button>
+        <Button
+          onClick={saveUserExercise}
+          variant="contained"
+          color="error"
+          className="place-self-center"
+        >
+          Add
+        </Button>
       </div>
     </div>
   );
