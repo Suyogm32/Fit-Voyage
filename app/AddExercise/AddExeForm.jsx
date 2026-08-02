@@ -1,18 +1,19 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Typography, Button } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+
 const AddExeForm = ({ exercise, setShowPopup }) => {
   const ss = typeof window !== "undefined" ? window.sessionStorage : null;
   const router = useRouter();
-  console.log(exercise);
+
   let initialState = {
     exerciseName: exercise.name,
     exerciseId: exercise.id,
     exerciseGif: exercise.gifUrl,
     numberOfSets: 0,
-    numberOfReps: 0,
+    targetReps: [],
   };
 
   const [userExercise, setUserExercise] = useState(initialState);
@@ -25,20 +26,35 @@ const AddExeForm = ({ exercise, setShowPopup }) => {
     setUserExercise(newExercise);
   };
 
+  // Resizes targetReps to match the new set count, keeping existing values
+  const handleSetsChange = (e) => {
+    const newCount = Math.max(0, parseInt(e.target.value, 10) || 0);
+    setUserExercise((prev) => {
+      const newTargetReps = Array.from(
+        { length: newCount },
+        (_, i) => prev.targetReps[i] ?? 0,
+      );
+      return { ...prev, numberOfSets: newCount, targetReps: newTargetReps };
+    });
+  };
+
+  const handleTargetRepChange = (index, value) => {
+    const repValue = Math.max(0, parseInt(value, 10) || 0);
+    setUserExercise((prev) => {
+      const newTargetReps = [...prev.targetReps];
+      newTargetReps[index] = repValue;
+      return { ...prev, targetReps: newTargetReps };
+    });
+  };
+
   const saveUserExercise = async (e) => {
     e.preventDefault();
     try {
-      const uid = JSON.parse(ss.getItem("user")).userId;
-      console.log("users is ", uid);
-      const data = { uid, day, userExercise };
-      console.log(`data at checkout on ${day} of user ${uid}`, data);
+      const data = { day, userExercise };
       const resp = await axios.put("/api/SaveWorkout", data);
-      console.log("log after saving workout", resp.data.schedule);
-      ss.setItem("schedule", JSON.stringify(resp.data.schedule));
       setShowPopup(false);
       router.push("/schedule");
     } catch (error) {
-      // Handle Axios POST request error
       console.error("Error creating product:", error);
       setError("Failed to create product. Please try again later.");
     }
@@ -49,19 +65,21 @@ const AddExeForm = ({ exercise, setShowPopup }) => {
       <Typography variant="h4" textTransform={"capitalize"} display={"inline"}>
         Add this Exercise to your schedule
       </Typography>
-      <div className="flex flex-col gap-4 justify-center items-start">
+      <div className="flex flex-col gap-4 justify-center items-start w-full">
         <input
           type="text"
           name="ExerciseName"
           placeholder={exercise.name}
           value={userExercise.exerciseName}
           className="p-4 py-2"
+          readOnly
         />
         <input
           type="text"
           name="ExerciseId"
           value={userExercise.exerciseId}
           className="hidden"
+          readOnly
         />
         <select
           value={day}
@@ -79,19 +97,30 @@ const AddExeForm = ({ exercise, setShowPopup }) => {
         <input
           type="number"
           name="Sets"
+          min="0"
           placeholder={"Number of Sets"}
           value={userExercise.numberOfSets}
-          onChange={(e) => PutAttribute(e, "numberOfSets")}
+          onChange={handleSetsChange}
           className="p-4 py-2"
         />
-        <input
-          type="number"
-          name="Reps"
-          placeholder={"Number of Repetations"}
-          value={userExercise.numberOfReps}
-          onChange={(e) => PutAttribute(e, "numberOfReps")}
-          className="p-4 py-2"
-        />
+
+        {userExercise.numberOfSets > 0 && (
+          <div className="flex flex-col gap-2 w-full">
+            <Typography variant="body2">Target reps for each set</Typography>
+            {Array.from({ length: userExercise.numberOfSets }).map((_, i) => (
+              <input
+                key={i}
+                type="number"
+                min="0"
+                placeholder={`Set ${i + 1} target reps`}
+                value={userExercise.targetReps[i] ?? 0}
+                onChange={(e) => handleTargetRepChange(i, e.target.value)}
+                className="p-4 py-2 w-full"
+              />
+            ))}
+          </div>
+        )}
+
         <Button
           onClick={saveUserExercise}
           variant="contained"

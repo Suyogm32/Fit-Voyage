@@ -1,92 +1,150 @@
 import { Workouts } from "@/models/WorkoutDays";
+import { WorkoutsLog } from "@/models/ExerciseSchema";
 import { mongooseConnect } from "@/lib/mongoose";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+const computeStatus = (exercise, loggedExercise) => {
+  if (
+    !loggedExercise ||
+    !loggedExercise.setsCompleted ||
+    loggedExercise.setsCompleted.length === 0
+  ) {
+    return "incomplete";
+  }
+  if (loggedExercise.setsCompleted.length < exercise.numberOfSets) {
+    return "partial";
+  }
+  const allTargetsMet = loggedExercise.setsCompleted.every(
+    (s) => s.repsCompleted >= s.targetReps,
+  );
+  return allTargetsMet ? "completed" : "partial";
+};
 
 export const GET = async (req) => {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return new NextResponse(JSON.stringify({ message: "Unauthorized." }), {
+        status: 401,
+      });
+    }
+    const userId = session.user.id;
+
     await mongooseConnect();
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
-    console.log(userId);
-    if (userId) {
-      const usersSchedule = await Workouts.find({ user: userId });
-      console.log(usersSchedule);
-      return new NextResponse(JSON.stringify(usersSchedule), { status: 200 });
-    } else {
-      return new NextResponse(JSON.stringify({ message: "User Not found!" }), {
+    const date = searchParams.get("date");
+    const day = searchParams.get("day");
+
+    const workoutDoc = await Workouts.findOne({ user: userId }).lean();
+
+    if (!date || !day) {
+      return new NextResponse(JSON.stringify(workoutDoc ? [workoutDoc] : []), {
         status: 200,
       });
     }
+
+    const daySchedule = workoutDoc?.schedule?.[day] || [];
+    const logDoc = await WorkoutsLog.findOne({ user: userId }).lean();
+    const dateLog = logDoc?.exercises_done?.find(
+      (entry) => entry.date === date && entry.day === day,
+    );
+
+    const merged = daySchedule.map((exercise) => {
+      const loggedExercise = dateLog?.exercises?.find(
+        (ex) => ex.exercise_ID === exercise.exerciseId,
+      );
+      return {
+        ...exercise,
+        status: computeStatus(exercise, loggedExercise),
+        setsCompleted: loggedExercise?.setsCompleted || [],
+      };
+    });
+
+    return new NextResponse(JSON.stringify(merged), { status: 200 });
   } catch (error) {
     return new NextResponse(
       JSON.stringify({
-        message: "Error in fetching equipment exercises",
-        error,
+        message: "Error fetching schedule",
+        error: error.message,
       }),
-      {
-        status: 500,
-      },
+      { status: 500 },
     );
   }
 };
 
 export const POST = async (req) => {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return new NextResponse(JSON.stringify({ message: "Unauthorized." }), {
+        status: 401,
+      });
+    }
+    const userId = session.user.id;
+
     await mongooseConnect();
-
     const body = await req.json();
-    const { userId, date, day, newExercise } = body; // `newExercise` is the new entry to add
+    const { date, day, exercise_ID, setsCompleted } = body;
 
-    // Validate input
-    if (!userId || !date || !day || !newExercise) {
+    if (
+      !date ||
+      !day ||
+      !exercise_ID ||
+      !Array.isArray(setsCompleted) ||
+      setsCompleted.length === 0
+    ) {
       return new NextResponse(
         JSON.stringify({
-          message: "Invalid or missing request body parameters.",
+          message:
+            "Missing or invalid request body. Required: date, day, exercise_ID, setsCompleted (non-empty array).",
         }),
         { status: 400 },
       );
     }
 
-    // Find the user's workout log
-    const workoutLog = await WorkoutsLog.findOne({ user: userId });
-
+    let workoutLog = await WorkoutsLog.findOne({ user: userId });
     if (!workoutLog) {
-      return new NextResponse(
-        JSON.stringify({ message: "Workout log not found for the user." }),
-        { status: 404 },
-      );
+      workoutLog = new WorkoutsLog({ user: userId, exercises_done: [] });
     }
 
-    // Find the log entry for the specified date and day
-    const existingLog = workoutLog.exercises_done.find(
-      (log) => log.date === date && log.day === day,
+    let dateEntry = workoutLog.exercises_done.find(
+      (entry) => entry.date === date && entry.day === day,
     );
 
-    if (existingLog) {
-      // Add the new exercise to the existing exercises array
-      existingLog.exercises.push(newExercise);
-    } else {
-      // If no entry exists for the date and day, create a new one
-      workoutLog.exercises_done.push({
-        date,
-        day,
-        exercises: [newExercise],
-      });
+    if (!dateEntry) {
+      workoutLog.exercises_done.push({ date, day, exercises: [] });
+      dateEntry =
+        workoutLog.exercises_done[workoutLog.exercises_done.length - 1];
     }
 
-    // Save the updated log
+    const exerciseEntry = dateEntry.exercises.find(
+      (ex) => ex.exercise_ID === exercise_ID,
+    );
+
+    if (exerciseEntry) {
+      exerciseEntry.setsCompleted = setsCompleted;
+    } else {
+      dateEntry.exercises.push({ exercise_ID, setsCompleted });
+    }
+
     await workoutLog.save();
 
     return new NextResponse(
       JSON.stringify({
-        message: "Exercise added successfully.",
-        data: workoutLog,
+        message: "Exercise log saved.",
+        exercise_ID,
+        setsCompleted,
       }),
       { status: 200 },
     );
   } catch (error) {
     return new NextResponse(
-      JSON.stringify({ message: "Error updating workout log", error }),
+      JSON.stringify({
+        message: "Error saving exercise log",
+        error: error.message,
+      }),
       { status: 500 },
     );
   }

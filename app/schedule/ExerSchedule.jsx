@@ -47,18 +47,8 @@ const ExerSchedule = ({ updateTrigger }) => {
 
   const fetchSchedule = async () => {
     try {
-      const user = ss ? JSON.parse(ss.getItem("user")) : null;
-      if (!user || !user.userId) {
-        console.error("User ID is not available");
-        setError("User not found. Please log in again.");
-        return;
-      }
-
-      const response = await axios.get(`/api/MySchedule`, {
-        params: { userId: user.userId },
-      });
-
-      if (response.data && response.data[0].schedule) {
+      const response = await axios.get(`/api/MySchedule`);
+      if (response.data && response.data[0]?.schedule) {
         setSchedule(response.data[0].schedule);
         setError(null);
       } else {
@@ -100,6 +90,7 @@ const ExerSchedule = ({ updateTrigger }) => {
                           <ScheduleExerciseCard
                             exercise={exercise}
                             day={day}
+                            onRemoved={fetchSchedule}
                             className="gap-4"
                           />
                         </li>

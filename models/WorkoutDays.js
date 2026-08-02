@@ -6,7 +6,7 @@ const ExerciseDetailsSchema = new Schema({
   exerciseId: { type: String, required: true },
   exerciseGif: { type: String, required: true },
   numberOfSets: { type: Number, default: 0 },
-  numberOfReps: { type: Number, default: 0 },
+  targetReps: { type: [Number], default: [] }, // one target per set, index 0 = set 1, etc.
 });
 
 // Define the main workout schedule schema

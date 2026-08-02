@@ -1,9 +1,14 @@
 const { Schema, models, model, default: mongoose } = require("mongoose");
 
 const ExerciseSchema = new Schema({
-  exercise_ID: { type: mongoose.Types.ObjectId, ref: "ExerciseDB" },
-  no_Of_Reps_Completed: { type: Number, required: true },
-  no_Of_Sets_Completed: { type: Number, required: true },
+  exercise_ID: { type: String, required: true }, // matches ExerciseDB's string `id`, not a Mongo ObjectId
+  setsCompleted: [
+    {
+      setNumber: { type: Number, required: true },
+      targetReps: { type: Number, required: true }, // snapshot of the target at log time
+      repsCompleted: { type: Number, required: true }, // 0 = skipped
+    },
+  ],
 });
 
 const ExerciseLogSchema = new Schema({
@@ -18,4 +23,4 @@ const WorkoutScheduleSchema = new Schema({
 });
 
 export const WorkoutsLog =
-  models.WorkoutsLog || model("Workouts", WorkoutScheduleSchema);
+  models.WorkoutsLog || model("WorkoutsLog", WorkoutScheduleSchema);
