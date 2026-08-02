@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Button, Stack, Typography } from "@mui/material";
 
 const ExerciseCard = ({ exercise, setAddExer }) => {
+  const { status } = useSession();
+  const router = useRouter();
+
   const handleClick = () => {
-    console.log("This is in ExerciseCard ->", exercise);
+    if (status !== "authenticated") {
+      router.push("/login");
+      return;
+    }
     setAddExer(exercise);
   };
+
   return (
     <div className="exercise-card bg-white rounded-lg w-[300px]">
       <Link href={`/exercise/${exercise.id}`}>

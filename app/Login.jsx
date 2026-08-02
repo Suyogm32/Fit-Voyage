@@ -1,9 +1,10 @@
+"use client";
 import React, { useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+
 const LoginGrid = styled.div`
   display: grid;
   grid-template-columns: 1.3fr 0.7fr;
@@ -11,51 +12,55 @@ const LoginGrid = styled.div`
   border-radius: 10px;
   box-shadow: 10px;
 `;
-const Login = ({ session }) => {
-  const initialState = {
-    email: "",
-    password: "",
-  };
+
+const Login = () => {
+  const initialState = { email: "", password: "" };
   const [loginData, setLoginData] = useState(initialState);
   const [error, setError] = useState("");
   const router = useRouter();
-  const ss = typeof window !== "undefined" ? window.sessionStorage : null;
+
   const PutAttribute = (e, attribute) => {
     const newdetails = { ...loginData };
     newdetails[attribute] = e.target.value;
     setLoginData(newdetails);
   };
-  const handleLogin = async () => {
+
+  const handleGoogleLogin = async () => {
     try {
-      const response = await signIn("google");
+      await signIn("google", { callbackUrl: "/" });
     } catch (error) {
       console.error("Error occurred during login:", error);
     }
   };
+
   const checkUser = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const data = loginData;
-      console.log(data);
-      const resp = await axios.post("/api/login", data);
-      console.log(resp.data);
-      if (resp.data.user) {
-        session.status = "authenticated";
-        session.data = resp.data.user;
-        const userInfo = {
-          userId: resp.data.user._id,
-          useremail: resp.data.user.email,
-          uname: resp.data.user.name,
-        };
-        ss.setItem("user", JSON.stringify(userInfo));
+      const result = await signIn("credentials", {
+        email: loginData.email,
+        password: loginData.password,
+        redirect: false,
+      });
+
+      if (result?.error === "EmailNotVerified") {
+        setError(
+          "Please verify your email before logging in — check your inbox for the link.",
+        );
+        return;
       }
-      console.log(session);
+      if (result?.error) {
+        setError("Invalid email or password.");
+        return;
+      }
+
+      router.push("/");
     } catch (error) {
-      // Handle Axios POST request error
-      console.error("Error creating product:", error);
-      setError("Failed to create product. Please try again later.");
+      console.error("Error during login:", error);
+      setError("Failed to log in. Please try again later.");
     }
   };
+
   return (
     <LoginGrid>
       <div>
@@ -88,6 +93,7 @@ const Login = ({ session }) => {
             onChange={(e) => PutAttribute(e, "password")}
             className="p-4 border-s-black border-b-[2px]"
           />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             onClick={checkUser}
             className="bg-white text-black p-2 px-4 rounded-lg"
@@ -97,7 +103,7 @@ const Login = ({ session }) => {
         </div>
         <button
           className="bg-white text-black p-2 px-4 rounded-lg"
-          onClick={handleLogin}
+          onClick={handleGoogleLogin}
         >
           Login with Google
         </button>
