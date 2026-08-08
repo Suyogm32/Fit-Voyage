@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Stack } from "@mui/material";
 import { Pagination } from "@mui/material";
 import ExerciseCard from "../homeComponents/Exercise/ExerciseCard";
-import AddExercise from "@/app/AddExercise/page";
+import AddExercise from "@/app/AddExercise/AddExercise";
 const ScheduleStack = ({ setExercises, exercises }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showPopup, setShowPopup] = useState(false);

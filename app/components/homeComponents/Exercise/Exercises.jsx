@@ -3,7 +3,7 @@ import { Pagination } from "@mui/material";
 import { Box, Stack, Typography } from "@mui/material";
 import ExerciseCard from "./ExerciseCard";
 import axios from "axios";
-import AddExercise from "@/app/AddExercise/page";
+import AddExercise from "@/app/AddExercise/AddExercise";
 const Exercises = ({ setExercises, bodyPart, exercises }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
